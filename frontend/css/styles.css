@@ -1,0 +1,268 @@
+/* ============================================================
+   MuniMood — Estilos Globales
+   ============================================================ */
+
+:root {
+  --mm-primary:     #1a3a5c;
+  --mm-primary-lt:  #2a5080;
+  --mm-accent:      #0d9de7;
+  --mm-bg:          #f0f4f8;
+  --mm-card-bg:     #ffffff;
+  --mm-card-border: #e2e8f0;
+  --mm-text:        #1e293b;
+  --mm-muted:       #64748b;
+  --mm-green:       #16a34a;
+  --mm-yellow:      #ca8a04;
+  --mm-red:         #dc2626;
+  --mm-green-lt:    #dcfce7;
+  --mm-yellow-lt:   #fef9c3;
+  --mm-red-lt:      #fee2e2;
+}
+
+/* ---- Base ---- */
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--mm-text);
+  background-color: var(--mm-bg);
+}
+
+/* ---- Login Background ---- */
+.mm-login-bg {
+  background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 40%, #0d9de7 100%);
+  min-height: 100vh;
+}
+
+.mm-logo-icon {
+  width: 72px;
+  height: 72px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.mm-card {
+  border: 1px solid var(--mm-card-border);
+  border-radius: 12px;
+  background: var(--mm-card-bg);
+}
+
+/* ---- Navbar ---- */
+.mm-navbar {
+  background: var(--mm-primary);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+.mm-navbar .navbar-brand,
+.mm-navbar .nav-link {
+  color: rgba(255,255,255,0.9) !important;
+}
+.mm-navbar .nav-link:hover,
+.mm-navbar .nav-link.active {
+  color: #fff !important;
+  border-bottom: 2px solid var(--mm-accent);
+}
+
+/* ---- App Background ---- */
+.mm-app-bg {
+  background-color: var(--mm-bg);
+  min-height: 100vh;
+}
+
+/* ---- Card Header ---- */
+.mm-card-header {
+  background: linear-gradient(90deg, var(--mm-primary) 0%, var(--mm-primary-lt) 100%);
+  color: #fff;
+  border-radius: 11px 11px 0 0 !important;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ---- KPI Cards ---- */
+.mm-kpi-card {
+  border: 1px solid var(--mm-card-border);
+  border-radius: 12px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.mm-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.mm-icon-blue   { color: var(--mm-accent); }
+.mm-icon-green  { color: var(--mm-green); }
+.mm-icon-red    { color: var(--mm-red); }
+.mm-icon-gray   { color: var(--mm-muted); }
+.mm-text-green  { color: var(--mm-green); }
+.mm-text-red    { color: var(--mm-red); }
+
+/* ---- Semáforo ---- */
+.mm-semaphore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.mm-semaphore-item {
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--mm-card-border);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.mm-semaphore-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.mm-semaphore-item.color-green  { background: var(--mm-green-lt);  border-color: #bbf7d0; }
+.mm-semaphore-item.color-yellow { background: var(--mm-yellow-lt); border-color: #fde68a; }
+.mm-semaphore-item.color-red    { background: var(--mm-red-lt);    border-color: #fecaca; }
+
+.mm-semaphore-light {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.light-green  { background: var(--mm-green);  box-shadow: 0 0 8px #16a34a80; }
+.light-yellow { background: #eab308;           box-shadow: 0 0 8px #eab30880; }
+.light-red    { background: var(--mm-red);     box-shadow: 0 0 8px #dc262680; }
+.light-gray   { background: #94a3b8; }
+
+.mm-semaphore-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--mm-text);
+}
+.mm-semaphore-stats {
+  font-size: 0.78rem;
+  color: var(--mm-muted);
+}
+
+/* ---- Barra de progreso del semáforo ---- */
+.mm-progress-bar-pos {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--mm-green);
+}
+.mm-progress-bar-neg {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--mm-red);
+}
+
+/* ---- Tabla estilizada ---- */
+.mm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.mm-table thead th {
+  background: #f8fafc;
+  border-bottom: 2px solid var(--mm-card-border);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mm-muted);
+  padding: 0.75rem 1rem;
+}
+.mm-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.1s;
+}
+.mm-table tbody tr:hover {
+  background: #f8fafc;
+}
+.mm-table tbody td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  font-size: 0.88rem;
+}
+.mm-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* ---- Badge red social ---- */
+.mm-badge-fb    { background:#1877f2; color:#fff; }
+.mm-badge-ig    { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color:#fff; }
+.mm-badge-tw    { background:#000; color:#fff; }
+.mm-badge-source{ background: var(--mm-primary-lt); color:#fff; }
+
+/* ---- Luces del semáforo (config) ---- */
+.mm-light {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+.mm-light-green  { background: var(--mm-green); }
+.mm-light-yellow { background: #eab308; }
+.mm-light-red    { background: var(--mm-red); }
+
+/* ---- Topic detail ---- */
+.mm-topic-icon-lg {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  background: var(--mm-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.mm-post-content {
+  background: #f8fafc;
+  border: 1px solid var(--mm-card-border);
+  font-size: 0.9rem;
+  color: var(--mm-text);
+  max-height: 160px;
+  overflow-y: auto;
+}
+.mm-phrases-list .list-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  border-color: #f1f5f9;
+}
+
+/* ---- Modal ---- */
+.mm-modal {
+  border-radius: 14px;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.mm-modal .modal-header {
+  background: var(--mm-primary);
+  color: #fff;
+  border-radius: 14px 14px 0 0;
+  border-bottom: none;
+}
+.mm-modal .btn-close {
+  filter: invert(1);
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ---- Utilidades ---- */
+.cursor-pointer { cursor: pointer; }
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

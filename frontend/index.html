@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MuniMood — Iniciar Sesión</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="mm-login-bg d-flex align-items-center justify-content-center min-vh-100">
+
+<div class="container" style="max-width:440px">
+  <!-- Logo / Título -->
+  <div class="text-center mb-4">
+    <div class="mm-logo-icon mb-2">
+      <i class="bi bi-thermometer-half"></i>
+    </div>
+    <h1 class="h3 fw-bold text-white">MuniMood</h1>
+    <p class="text-white-50 mb-0">Termómetro Político Municipal</p>
+  </div>
+
+  <!-- Panel Login -->
+  <div id="panelLogin" class="card mm-card shadow-lg">
+    <div class="card-body p-4">
+      <h5 class="card-title mb-4 text-center fw-semibold">Iniciar Sesión</h5>
+
+      <div id="alertLogin" class="alert d-none" role="alert"></div>
+
+      <form id="formLogin" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="inputUser">Usuario o Email</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" id="inputUser" class="form-control" placeholder="usuario" required autocomplete="username"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="inputPass">Contraseña</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" id="inputPass" class="form-control" placeholder="••••••••" required autocomplete="current-password"/>
+            <button class="btn btn-outline-secondary" type="button" id="btnTogglePass" tabindex="-1">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-primary btn-lg" id="btnLogin">
+            <span id="btnLoginSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+            Ingresar
+          </button>
+        </div>
+        <div class="text-center mt-3">
+          <a href="#" id="linkForgot" class="small text-muted">¿Olvidaste tu contraseña?</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Panel Recuperar contraseña -->
+  <div id="panelReset" class="card mm-card shadow-lg d-none">
+    <div class="card-body p-4">
+      <h5 class="card-title mb-4 text-center fw-semibold">Restablecer Contraseña</h5>
+      <div id="alertReset" class="alert d-none" role="alert"></div>
+      <form id="formReset" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="inputEmail">Email registrado</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+            <input type="email" id="inputEmail" class="form-control" placeholder="usuario@municipio.gob.ar" required/>
+          </div>
+          <div class="form-text">Recibirás un link para restablecer tu contraseña.</div>
+        </div>
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-primary" id="btnReset">
+            <span id="btnResetSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+            Enviar link
+          </button>
+        </div>
+        <div class="text-center mt-3">
+          <a href="#" id="linkBackLogin" class="small text-muted">← Volver al login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Panel Nueva contraseña (token via URL) -->
+  <div id="panelNewPass" class="card mm-card shadow-lg d-none">
+    <div class="card-body p-4">
+      <h5 class="card-title mb-4 text-center fw-semibold">Nueva Contraseña</h5>
+      <div id="alertNewPass" class="alert d-none" role="alert"></div>
+      <form id="formNewPass" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="inputNewPass">Nueva contraseña</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" id="inputNewPass" class="form-control" placeholder="Mínimo 6 caracteres" required minlength="6"/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="inputConfirmPass">Confirmar contraseña</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+            <input type="password" id="inputConfirmPass" class="form-control" placeholder="Repetí la contraseña" required/>
+          </div>
+        </div>
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-primary" id="btnNewPass">
+            <span id="btnNewPassSpinner" class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+            Guardar contraseña
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <p class="text-center text-white-50 small mt-4">
+    MuniMood v1.0 &mdash; Sistema de Gestión Municipal
+  </p>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
