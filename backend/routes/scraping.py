@@ -193,10 +193,18 @@ def _scrape_source(db: Session, source_id: int, ai_engine: str, ai_key: str, ai_
         # Actualizar last_scraped_at de la fuente
         source.last_scraped_at = datetime.utcnow()
 
+        total_scraped = len(raw_posts)
+        discarded     = total_scraped - posts_saved
+
+        source.last_scraped_at = datetime.utcnow()
         log.status         = "success"
         log.posts_found    = posts_saved
         log.comments_found = comments_saved
-        log.message        = f"OK: {posts_saved} posts, {comments_saved} comentarios nuevos."
+        log.message        = (
+            f"OK: {posts_saved} posts guardados, {comments_saved} comentarios nuevos. "
+            + (f"{discarded} posts descartados (no clasificaron en ningún eje temático). " if discarded else "")
+            + (f"0 posts encontrados desde {source.start_date} — verificá la fecha de inicio." if total_scraped == 0 else "")
+        )
         log.finished_at    = datetime.utcnow()
         db.commit()
         logger.info("Scraping OK: fuente %d — %d posts, %d comentarios", source_id, posts_saved, comments_saved)

@@ -18,8 +18,10 @@ class FacebookScraper(BaseScraper):
         try:
             from facebook_scraper import get_posts
         except ImportError:
-            logger.error("facebook-scraper no está instalado. Ejecutá: pip install facebook-scraper")
-            return []
+            raise RuntimeError(
+                "La librería 'facebook-scraper' no está instalada. "
+                "Ejecutá: pip install facebook-scraper"
+            )
 
         handle = self.extract_handle(self.source_url)
         posts: List[ScrapedPost] = []
@@ -27,6 +29,11 @@ class FacebookScraper(BaseScraper):
         credentials = None
         if FACEBOOK_EMAIL and FACEBOOK_PASSWORD:
             credentials = (FACEBOOK_EMAIL, FACEBOOK_PASSWORD)
+        else:
+            logger.warning(
+                "Facebook: sin credenciales (FACEBOOK_EMAIL/FACEBOOK_PASSWORD en .env). "
+                "Se intentará scraping anónimo — puede fallar en perfiles privados o bloqueados."
+            )
 
         try:
             options = {
@@ -90,7 +97,19 @@ class FacebookScraper(BaseScraper):
                     continue
 
         except Exception as e:
-            logger.error("Facebook: error scrapeando '%s' — %s", handle, e)
+            raise RuntimeError(
+                f"Facebook: error al scrapear la página '{handle}'. "
+                f"Causas posibles: página privada, bloqueo de Facebook, o nombre incorrecto. "
+                f"Configurá FACEBOOK_EMAIL y FACEBOOK_PASSWORD en .env si no lo hiciste. "
+                f"Error técnico: {e}"
+            )
 
-        logger.info("Facebook @%s: %d posts encontrados desde %s", handle, len(posts), self.start_date.date())
+        if not posts:
+            logger.warning(
+                "Facebook @%s: 0 posts encontrados desde %s. "
+                "Verificá que la URL sea una página pública y que la fecha de inicio sea correcta.",
+                handle, self.start_date.date()
+            )
+        else:
+            logger.info("Facebook @%s: %d posts encontrados desde %s", handle, len(posts), self.start_date.date())
         return posts

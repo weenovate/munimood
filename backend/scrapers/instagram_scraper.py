@@ -18,8 +18,17 @@ class InstagramScraper(BaseScraper):
         try:
             import instaloader
         except ImportError:
-            logger.error("instaloader no está instalado. Ejecutá: pip install instaloader")
-            return []
+            raise RuntimeError(
+                "La librería 'instaloader' no está instalada. "
+                "Ejecutá: pip install instaloader"
+            )
+
+        if not INSTAGRAM_USERNAME or not INSTAGRAM_PASSWORD:
+            raise RuntimeError(
+                "Instagram requiere credenciales de acceso. "
+                "Configurá INSTAGRAM_USERNAME y INSTAGRAM_PASSWORD en el archivo .env "
+                "y reiniciá la aplicación."
+            )
 
         L = instaloader.Instaloader(
             download_pictures=False,
@@ -32,13 +41,14 @@ class InstagramScraper(BaseScraper):
             quiet=True,
         )
 
-        # Login opcional pero recomendado para obtener más datos
-        if INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD:
-            try:
-                L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
-                logger.info("Instagram: sesión iniciada como %s", INSTAGRAM_USERNAME)
-            except Exception as e:
-                logger.warning("Instagram: no se pudo iniciar sesión — %s", e)
+        try:
+            L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+            logger.info("Instagram: sesión iniciada como %s", INSTAGRAM_USERNAME)
+        except Exception as e:
+            raise RuntimeError(
+                f"Instagram: no se pudo iniciar sesión con el usuario '{INSTAGRAM_USERNAME}'. "
+                f"Verificá las credenciales en .env — Error: {e}"
+            )
 
         handle = self.extract_handle(self.source_url)
         posts: List[ScrapedPost] = []
@@ -46,8 +56,10 @@ class InstagramScraper(BaseScraper):
         try:
             profile = instaloader.Profile.from_username(L.context, handle)
         except Exception as e:
-            logger.error("Instagram: no se pudo cargar el perfil '%s' — %s", handle, e)
-            return []
+            raise RuntimeError(
+                f"Instagram: no se encontró el perfil '@{handle}'. "
+                f"Verificá que la URL sea correcta — Error: {e}"
+            )
 
         start_ts = self.start_date.replace(tzinfo=timezone.utc) if self.start_date.tzinfo is None else self.start_date
 

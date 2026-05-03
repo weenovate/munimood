@@ -54,11 +54,28 @@
   <div id="alertSources" class="alert d-none mb-3" role="alert"></div>
 
   <!-- Tabla -->
-  <div class="card mm-card">
+  <div class="card mm-card mb-4">
     <div class="card-body p-0">
       <div id="sourcesTableWrap">
         <div class="text-center py-5 text-muted">
           <div class="spinner-border spinner-border-sm me-2"></div>Cargando fuentes...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log de Scraping -->
+  <div class="card mm-card">
+    <div class="card-header mm-card-header d-flex align-items-center justify-content-between">
+      <span><i class="bi bi-journal-text me-2"></i>Registro de Scraping</span>
+      <button class="btn btn-outline-light btn-sm" id="btnRefreshLogs">
+        <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+      </button>
+    </div>
+    <div class="card-body p-0">
+      <div id="logsTableWrap">
+        <div class="text-center py-4 text-muted small">
+          <div class="spinner-border spinner-border-sm me-2"></div>Cargando logs...
         </div>
       </div>
     </div>

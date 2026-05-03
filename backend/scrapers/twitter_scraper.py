@@ -19,7 +19,13 @@ class TwitterScraper(BaseScraper):
     def scrape(self) -> List[ScrapedPost]:
         if TWITTER_BEARER:
             return self._scrape_v2()
-        return self._scrape_snscrape()
+        raise RuntimeError(
+            "Twitter/X requiere un Bearer Token para funcionar. "
+            "snscrape (el método alternativo) fue bloqueado por X en 2023 y ya no funciona. "
+            "Para obtener un Bearer Token gratuito: "
+            "1) Ir a developer.x.com → 2) Crear una app → 3) Copiar el Bearer Token "
+            "→ 4) Agregarlo como TWITTER_BEARER_TOKEN en el archivo .env"
+        )
 
     # ------------------------------------------------------------------
     # API oficial v2 con tweepy

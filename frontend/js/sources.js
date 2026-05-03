@@ -185,7 +185,8 @@ document.getElementById("btnConfirmDeleteSource")?.addEventListener("click", asy
 async function scrapeOne(id) {
   try {
     await Api.triggerScraping(id);
-    showToast("Scraping iniciado para esta fuente.", "success");
+    showToast("Scraping iniciado. Revisá el registro en unos segundos.", "success");
+    setTimeout(loadLogs, 4000);
   } catch (err) {
     showToast("Error al iniciar scraping: " + err.message, "danger");
   }
@@ -195,10 +196,74 @@ document.getElementById("btnScrapeAll")?.addEventListener("click", async () => {
   try {
     const res = await Api.triggerScraping(null);
     showToast(res.message, "success");
+    setTimeout(loadLogs, 4000);
   } catch (err) {
     showToast("Error: " + err.message, "danger");
   }
 });
+
+// ================================================================
+// LOG DE SCRAPING
+// ================================================================
+
+async function loadLogs() {
+  const wrap = document.getElementById("logsTableWrap");
+  try {
+    const logs = await Api.getScrapingLogs(30);
+
+    if (!logs.length) {
+      wrap.innerHTML = '<div class="text-center py-4 text-muted small">Sin registros de scraping aún. Usá el botón <strong>Scrapear</strong> en una fuente.</div>';
+      return;
+    }
+
+    const statusMap = {
+      running : { cls: "bg-primary-subtle text-primary",    icon: "bi-arrow-repeat", label: "En progreso" },
+      success : { cls: "bg-success-subtle text-success",    icon: "bi-check-circle",  label: "Exitoso"    },
+      error   : { cls: "bg-danger-subtle text-danger",      icon: "bi-x-circle",      label: "Error"      },
+      partial : { cls: "bg-warning-subtle text-warning",    icon: "bi-exclamation-circle", label: "Parcial" },
+    };
+
+    wrap.innerHTML = `
+      <div class="table-responsive">
+        <table class="mm-table">
+          <thead>
+            <tr>
+              <th>Fuente</th>
+              <th>Estado</th>
+              <th class="text-center">Posts</th>
+              <th class="text-center">Comentarios</th>
+              <th>Fecha</th>
+              <th>Detalle / Error</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${logs.map(l => {
+              const s = statusMap[l.status] || statusMap.error;
+              return `
+                <tr>
+                  <td class="small fw-semibold">${escHtml(l.source_name)}</td>
+                  <td>
+                    <span class="badge ${s.cls}">
+                      <i class="bi ${s.icon} me-1"></i>${s.label}
+                    </span>
+                  </td>
+                  <td class="text-center">${l.posts_found ?? '—'}</td>
+                  <td class="text-center">${l.comments_found ?? '—'}</td>
+                  <td class="small text-muted">${fmtDatetime(l.started_at)}</td>
+                  <td class="small ${l.status === 'error' ? 'text-danger' : 'text-muted'}" style="max-width:300px">
+                    ${escHtml(l.message || '—')}
+                  </td>
+                </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>`;
+  } catch (err) {
+    wrap.innerHTML = `<div class="alert alert-danger m-3">${err.message}</div>`;
+  }
+}
+
+document.getElementById("btnRefreshLogs")?.addEventListener("click", loadLogs);
 
 function escHtml(str) {
   if (!str) return "";
@@ -207,3 +272,4 @@ function escHtml(str) {
 
 // ---- Init ----
 loadSources();
+loadLogs();
