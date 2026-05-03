@@ -1,13 +1,19 @@
 """
 Scraper de Facebook usando la librería facebook-scraper.
-Requiere: pip install facebook-scraper
+Requiere: pip install facebook-scraper lxml_html_clean
+
+Autenticación (en orden de prioridad):
+  1. Cookies del navegador (FACEBOOK_COOKIES_FILE en .env) — más confiable desde VPS
+  2. Email + contraseña (FACEBOOK_EMAIL / FACEBOOK_PASSWORD en .env)
+  3. Anónimo — sólo funciona en páginas completamente públicas
 """
 import logging
+import os
 from datetime import datetime
 from typing import List
 
 from backend.scrapers.base_scraper import BaseScraper, ScrapedPost, ScrapedComment
-from backend.config import FACEBOOK_EMAIL, FACEBOOK_PASSWORD
+from backend.config import FACEBOOK_EMAIL, FACEBOOK_PASSWORD, FACEBOOK_COOKIES_FILE
 
 logger = logging.getLogger(__name__)
 
@@ -20,20 +26,27 @@ class FacebookScraper(BaseScraper):
         except ImportError as _ie:
             raise RuntimeError(
                 f"La librería 'facebook-scraper' no se pudo cargar: {_ie}. "
-                "Verificá que esté instalada en el venv activo con: "
-                "source venv/bin/activate && pip install facebook-scraper"
+                "Ejecutá: source venv/bin/activate && pip install facebook-scraper lxml_html_clean"
             )
 
         handle = self.extract_handle(self.source_url)
         posts: List[ScrapedPost] = []
 
-        credentials = None
-        if FACEBOOK_EMAIL and FACEBOOK_PASSWORD:
+        # -- Determinar método de autenticación --
+        cookies_path = FACEBOOK_COOKIES_FILE.strip() if FACEBOOK_COOKIES_FILE else ""
+        use_cookies  = bool(cookies_path and os.path.isfile(cookies_path))
+        credentials  = None
+
+        if use_cookies:
+            logger.info("Facebook: usando cookies del navegador (%s)", cookies_path)
+        elif FACEBOOK_EMAIL and FACEBOOK_PASSWORD:
             credentials = (FACEBOOK_EMAIL, FACEBOOK_PASSWORD)
+            logger.info("Facebook: usando email/contraseña (puede fallar desde VPS)")
         else:
             logger.warning(
-                "Facebook: sin credenciales (FACEBOOK_EMAIL/FACEBOOK_PASSWORD en .env). "
-                "Se intentará scraping anónimo — puede fallar en perfiles privados o bloqueados."
+                "Facebook: sin autenticación. "
+                "Para páginas que requieren login, exportá las cookies del navegador "
+                "y configurá FACEBOOK_COOKIES_FILE en .env"
             )
 
         try:
@@ -43,12 +56,13 @@ class FacebookScraper(BaseScraper):
                 "progress": False,
             }
 
-            for raw_post in get_posts(
-                handle,
-                pages=20,
-                credentials=credentials,
-                options=options,
-            ):
+            kwargs = dict(pages=20, options=options)
+            if use_cookies:
+                kwargs["cookies"] = cookies_path
+            elif credentials:
+                kwargs["credentials"] = credentials
+
+            for raw_post in get_posts(handle, **kwargs):
                 try:
                     post_dt = raw_post.get("time")
                     if isinstance(post_dt, datetime):
@@ -63,8 +77,7 @@ class FacebookScraper(BaseScraper):
                     ext_id = raw_post.get("post_id") or url
 
                     comments: List[ScrapedComment] = []
-                    raw_comments = raw_post.get("comments_full") or []
-                    for rc in raw_comments:
+                    for rc in (raw_post.get("comments_full") or []):
                         try:
                             c_text = rc.get("comment_text") or rc.get("body") or ""
                             if not c_text:
@@ -98,19 +111,23 @@ class FacebookScraper(BaseScraper):
                     continue
 
         except Exception as e:
+            auth_hint = (
+                "Exportá las cookies de Facebook desde tu navegador (ver instrucciones abajo) "
+                "y configurá FACEBOOK_COOKIES_FILE en .env."
+                if not use_cookies else
+                f"Las cookies en '{cookies_path}' pueden haber expirado. Volvé a exportarlas."
+            )
             raise RuntimeError(
-                f"Facebook: error al scrapear la página '{handle}'. "
-                f"Causas posibles: página privada, bloqueo de Facebook, o nombre incorrecto. "
-                f"Configurá FACEBOOK_EMAIL y FACEBOOK_PASSWORD en .env si no lo hiciste. "
-                f"Error técnico: {e}"
+                f"Facebook: error al scrapear '{handle}'. "
+                f"Error técnico: {e}. "
+                f"{auth_hint}"
             )
 
         if not posts:
             logger.warning(
-                "Facebook @%s: 0 posts encontrados desde %s. "
-                "Verificá que la URL sea una página pública y que la fecha de inicio sea correcta.",
+                "Facebook '%s': 0 posts desde %s. Verificá la URL y la fecha de inicio.",
                 handle, self.start_date.date()
             )
         else:
-            logger.info("Facebook @%s: %d posts encontrados desde %s", handle, len(posts), self.start_date.date())
+            logger.info("Facebook '%s': %d posts desde %s", handle, len(posts), self.start_date.date())
         return posts

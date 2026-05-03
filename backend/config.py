@@ -46,11 +46,12 @@ APP_URL = os.getenv("APP_URL", "http://localhost:8000")
 # ------------------------------------------------------------------
 # Scraping / credenciales de redes sociales (opcionales)
 # ------------------------------------------------------------------
-INSTAGRAM_USERNAME = os.getenv("INSTAGRAM_USERNAME", "")
-INSTAGRAM_PASSWORD = os.getenv("INSTAGRAM_PASSWORD", "")
-FACEBOOK_EMAIL     = os.getenv("FACEBOOK_EMAIL", "")
-FACEBOOK_PASSWORD  = os.getenv("FACEBOOK_PASSWORD", "")
-TWITTER_BEARER     = os.getenv("TWITTER_BEARER_TOKEN", "")
+INSTAGRAM_USERNAME   = os.getenv("INSTAGRAM_USERNAME", "")
+INSTAGRAM_PASSWORD   = os.getenv("INSTAGRAM_PASSWORD", "")
+FACEBOOK_EMAIL       = os.getenv("FACEBOOK_EMAIL", "")
+FACEBOOK_PASSWORD    = os.getenv("FACEBOOK_PASSWORD", "")
+FACEBOOK_COOKIES_FILE = os.getenv("FACEBOOK_COOKIES_FILE", "")  # ruta a cookies.txt exportadas del navegador
+TWITTER_BEARER       = os.getenv("TWITTER_BEARER_TOKEN", "")
 
 # ------------------------------------------------------------------
 # Miscelánea
