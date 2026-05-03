@@ -17,10 +17,11 @@ class FacebookScraper(BaseScraper):
     def scrape(self) -> List[ScrapedPost]:
         try:
             from facebook_scraper import get_posts
-        except ImportError:
+        except ImportError as _ie:
             raise RuntimeError(
-                "La librería 'facebook-scraper' no está instalada. "
-                "Ejecutá: pip install facebook-scraper"
+                f"La librería 'facebook-scraper' no se pudo cargar: {_ie}. "
+                "Verificá que esté instalada en el venv activo con: "
+                "source venv/bin/activate && pip install facebook-scraper"
             )
 
         handle = self.extract_handle(self.source_url)
